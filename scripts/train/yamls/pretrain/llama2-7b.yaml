@@ -14,7 +14,7 @@ integrations:
 command: |
   pip install accelerate==0.21.0  transformers==4.31.0 
   huggingface-cli login --token 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
-  cd avalaraGPT/scripts/
+  cd ava-llm-foundry/scripts/
   composer train/train.py /mnt/config/parameters.yaml
 
 
@@ -22,7 +22,7 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
-gpu_num: 32 
+gpu_num: 32
 gpu_type: a100_80gb
 cluster: r8z6 # replace with your cluster here!
 
