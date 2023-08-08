@@ -315,6 +315,9 @@ class DatasetConstructor:
             batched=False,
             remove_columns=columns_to_remove,
         )
+        print("After tokenization: ")
+        print("First example : \n", tokenized_dataset[0])
+
         prompt_length_filtered_dataset = tokenized_dataset.filter(
             lambda example: len(example['input_ids']) < max_seq_len)
 
