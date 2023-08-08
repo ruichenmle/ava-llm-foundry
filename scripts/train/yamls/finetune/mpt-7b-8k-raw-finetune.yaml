@@ -21,7 +21,7 @@ integrations:
 
 command: |
   pip install s3fs
-  cd avalaraGPT/scripts/
+  cd ava-llm-foundry/scripts/
   composer train/train.py /mnt/config/parameters.yaml
 
 
