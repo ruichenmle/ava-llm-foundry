@@ -32,8 +32,9 @@ those keys are strings (i.e. text).
 """
 
 import importlib
-import os
+import os, json
 import warnings
+import pandas as pd
 from typing import Any, Callable, Dict, Optional, Union
 
 import datasets as hf_datasets
@@ -46,13 +47,20 @@ __all__ = ['dataset_constructor']
 
 def _tokenize_formatted_example(example: Dict[str, Any],
                                 tokenizer: PreTrainedTokenizerBase):
-    if ('prompt' not in example) or ('response' not in example):
-        raise KeyError(
-            'Unable to tokenize example because it has not been properly formatted. ' +\
-            '"prompt" and "response" are required keys but at least one was missing ' +\
-            f'from {example=}.'
-        )
-    return tokenizer(text=example['prompt'], text_target=example['response'])
+    # if ('prompt' not in example) or ('response' not in example):
+    #     raise KeyError(
+    #         'Unable to tokenize example because it has not been properly formatted. ' +\
+    #         '"prompt" and "response" are required keys but at least one was missing ' +\
+    #         f'from {example=}.'
+    #     )
+
+    prompt = "generate templates: " + example['input']
+    # json string to json
+    output_json = json.loads(example["output"])
+    output_list =[list(item.values()) for item in output_json]
+    response = str(output_list)
+
+    return tokenizer(text=prompt, text_target=response)
 
 
 class StreamingFinetuningDataset(StreamingDataset):
@@ -280,7 +288,21 @@ class DatasetConstructor:
             preprocessing_fn = self.get_preprocessing_fn_from_str(
                 proto_preprocessing_fn, dataset_name, verbose=True)
 
-        dataset = hf_datasets.load_dataset(dataset_name, split=split, **kwargs)
+        dataset_path = cfg.path
+        file = pd.read_csv(dataset_path, sep='\t', usecols=[1, 2])
+        file = file.sample(frac=1, random_state=1).reset_index(drop=True)
+        print(f"Original {split} file size: {file.shape}")
+
+        dataset = hf_datasets.Dataset.from_pandas(file, split=split) # check format
+        print(dataset)
+        # rm empty input
+        dataset = dataset.filter(lambda example: example["input"] and example["output"])
+        print("After filtering empty: ", dataset)
+        print("First example: ")
+        print(dataset[0])
+        print("First example Done!")
+
+        # dataset = hf_datasets.load_dataset(dataset_name, split=split, **kwargs)
 
         def dataset_mapper(example: Dict):
             if preprocessing_fn is not None:
