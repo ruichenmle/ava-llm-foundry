@@ -1,0 +1,43 @@
+integrations:
+- integration_type: git_repo
+  git_repo: ruichenmle/ava-llm-foundry
+  git_branch: mpt-7b-8k-pretrain # use your branch
+  # git_commit: # OR use your commit hash
+  pip_install: -e .[gpu]
+  ssh_clone: false # Should be true if using a private repo
+
+# We are fetching, converting, and training on the 'val' split
+# as it is small and quick to get going for this demo.
+# For real training runs, follow the instructions in `llm-foundry/scripts/train/README.md`
+# to convert and host the full 'train' dataset.
+
+command: |
+  cd ava-llm-foundry/scripts/
+  pip install awscli
+  aws s3 cp s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging/ my-local-data/ --recursive
+  python data_prep/convert_dataset_json.py --path my-local-data/train.jsonl \
+    --out_root s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging-8k-streaming/train/ \
+    --tokenizer EleutherAI/gpt-neox-20b \
+    --concat_tokens 8192 \
+    --eos_text '<|endoftext|>'
+  python data_prep/convert_dataset_json.py --path my-local-data/validation.jsonl \
+    --out_root s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging-8k-streaming/val/ \
+    --tokenizer EleutherAI/gpt-neox-20b \
+    --concat_tokens 8192 \
+    --eos_text '<|endoftext|>'  
+
+
+image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
+# Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
+
+
+gpu_num: 8
+gpu_type: a100_80gb
+cluster: r8z6 # replace with your cluster here!
+
+
+# Run Name
+run_name: avagpt-data-8192-conversion # If left blank, will be read from env var $RUN_NAME
+
+
+parameters: {}
