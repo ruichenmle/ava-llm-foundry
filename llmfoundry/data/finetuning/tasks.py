@@ -59,6 +59,7 @@ def _tokenize_formatted_example(example: Dict[str, Any],
     output_json = json.loads(example["output"])
     output_list =[list(item.values()) for item in output_json]
     response = str(output_list)
+    print(response)
 
     return tokenizer(text=prompt, text_target=response)
 
