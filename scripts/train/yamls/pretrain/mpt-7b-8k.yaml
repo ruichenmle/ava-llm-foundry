@@ -28,7 +28,7 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
-gpu_num: 24
+gpu_num: 32
 gpu_type: a100_80gb
 cluster: r8z6 # replace with your cluster here!
 
@@ -93,7 +93,7 @@ parameters:
 
   optimizer:
     name: decoupled_adamw
-    lr: 1.2e-4
+    lr: 2e-5
     betas:
     - 0.9
     - 0.95
@@ -106,18 +106,18 @@ parameters:
       clipping_threshold: 1.0
 
   # max_duration: 143100ba # ~ 600B tokens
-  max_duration: 6ep 
+  max_duration: 5ep 
   # eval_interval: 10000ba
   eval_interval: 1000ba
   eval_first: false
   eval_subset_num_batches: -1
-  global_train_batch_size: 384
+  global_train_batch_size: 512 
 
   # System
   seed: ${global_seed}
   device_eval_batch_size: 8
-  device_train_microbatch_size: 8
-  # device_train_microbatch_size: 1
+  # device_train_microbatch_size: 8
+  device_train_microbatch_size: 1
   precision: amp_bf16
 
   # FSDP
@@ -156,7 +156,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/pretrained/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-low-lr/pretrained/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
