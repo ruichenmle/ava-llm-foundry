@@ -13,6 +13,8 @@ integrations:
   group: mpt-7b-8k-pretrain
   tags: 
     - pretrain
+    - lower_global_batch  
+  
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -28,9 +30,9 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
-gpu_num: 32
-gpu_type: a100_80gb
-cluster: r8z6 # replace with your cluster here!
+gpu_num: 16
+gpu_type: a100_40gb
+cluster: r8z2 # replace with your cluster here!
 
 
 # Run Name
@@ -93,7 +95,7 @@ parameters:
 
   optimizer:
     name: decoupled_adamw
-    lr: 2e-5
+    lr: 2.0e-5
     betas:
     - 0.9
     - 0.95
@@ -111,7 +113,7 @@ parameters:
   eval_interval: 1000ba
   eval_first: false
   eval_subset_num_batches: -1
-  global_train_batch_size: 512 
+  global_train_batch_size: 64
 
   # System
   seed: ${global_seed}
@@ -156,7 +158,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-low-lr/pretrained/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-more-batch-only/pretrained/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
