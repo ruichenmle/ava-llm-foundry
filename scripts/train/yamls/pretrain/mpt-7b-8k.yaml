@@ -14,6 +14,7 @@ integrations:
   tags: 
     - pretrain
     - lower_global_batch  
+    - shuffle_algo
   
 
 # We are fetching, converting, and training on the 'val' split
@@ -72,6 +73,7 @@ parameters:
       shuffle: true
       max_seq_len: ${max_seq_len}
       shuffle_seed: ${global_seed}
+      shuffle_algo: naive
     drop_last: true
     num_workers: 8
 
@@ -158,7 +160,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-more-batch-only/pretrained/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-algo-streaming/pretrained/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
