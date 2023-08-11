@@ -21,7 +21,8 @@ model:
   download_parameters:
     # s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30B-pretrained-hf/
     # s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/item-pretrained-finetuned-hf/
-    s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-hf/
+    # s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-hf/
+    s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-10epochs-hf/
     gpus: 2
     force_conversion: true
   model_handler: examples.inference-deployments.mpt.mpt_ft_handler.MPTFTModelHandler

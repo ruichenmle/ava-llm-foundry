@@ -13,6 +13,7 @@ integrations:
   group: mpt-7b-8k-sut-finetune
   tags: 
     - ava-mpt-7b-8k
+    - 5-epochs
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -31,11 +32,11 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 gpu_num: 16
 gpu_type: a100_40gb
-cluster: r8z2 # replace with your cluster here!
+cluster: r8z3 # replace with your cluster here!
 
 
 # Run Name
-run_name: 7b-8k-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
+run_name: naive_streaming # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 8192
@@ -181,9 +182,9 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-streaming-naive/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
   # load_path: s3://my-bucket/my-folder/gpt-30b/checkpoints/latest-rank{rank}.pt
-  load_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-more-batch-only/pretrained/ep5-ba360/ep5-ba360-rank{rank}.pt
+  load_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-algo-streaming/pretrained/ep5-ba360/ep5-ba360-rank{rank}.pt
