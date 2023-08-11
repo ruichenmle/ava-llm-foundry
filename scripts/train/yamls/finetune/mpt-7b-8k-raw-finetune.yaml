@@ -35,7 +35,7 @@ cluster: r8z6 # replace with your cluster here!
 
 
 # Run Name
-run_name: 7b-8k-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
+run_name: real-7b-8k-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 8192
@@ -46,7 +46,7 @@ parameters:
   model:
     name: hf_causal_lm
     pretrained: true
-    pretrained_model_name_or_path: mosaicml/mpt-7b # <-- Simply change to 30b when you want
+    pretrained_model_name_or_path: mosaicml/mpt-7b-8k # <-- Simply change to 30b when you want
     init_device: mixed
     config_overrides:
       max_seq_len: ${max_seq_len}
@@ -181,7 +181,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/raw-sut-finetuned/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/raw-sut-finetuned-updated/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
