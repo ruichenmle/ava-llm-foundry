@@ -1,7 +1,7 @@
 integrations:
 - integration_type: git_repo
   git_repo: ruichenmle/ava-llm-foundry
-  git_branch: sut-mpt7b-8k-finetune # use your branch
+  git_branch: mpt-30b-finetune # use your branch
   # git_commit: # OR use your commit hash
   pip_install: -e .[gpu]
   ssh_clone: false # Should be true if using a private repo
@@ -10,10 +10,10 @@ integrations:
   project: avalaraGPT
   # The username or organization the Weights and Biases project belongs to
   entity: mlnlp 
-  group: mpt-7b-8k-sut-finetune
+  group: mpt-30b-sut-finetune
   tags: 
-    - ava-mpt-7b-8k
-    - 5-epochs
+    - ava-mpt-30b
+    - 5-epochs-pretrain
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -30,24 +30,24 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
-gpu_num: 16
+gpu_num: 32
 gpu_type: a100_40gb
 cluster: r8z3 # replace with your cluster here!
 
 
 # Run Name
-run_name: naive_streaming # If left blank, will be read from env var $RUN_NAME
+run_name: sut-ava-finetune # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 8192
   global_seed: 17
-  tokenizer_name: mosaicml/mpt-7b-8k
+  tokenizer_name: mosaicml/mpt-30b
 
   # Model
   model:
     name: hf_causal_lm
     pretrained: true
-    pretrained_model_name_or_path: mosaicml/mpt-7b # <-- Simply change to 30b when you want
+    pretrained_model_name_or_path: mosaicml/mpt-30b # <-- Simply change to 30b when you want
     init_device: mixed
     config_overrides:
       max_seq_len: ${max_seq_len}
@@ -126,7 +126,7 @@ parameters:
   eval_interval: 1ep
   eval_first: true
   eval_subset_num_batches: -1
-  global_train_batch_size: 64
+  global_train_batch_size: 128
 
   # System
   seed: ${global_seed}
@@ -182,9 +182,9 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-streaming-naive/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/ava-finetuned/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
   # load_path: s3://my-bucket/my-folder/gpt-30b/checkpoints/latest-rank{rank}.pt
-  load_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-algo-streaming/pretrained/ep5-ba360/ep5-ba360-rank{rank}.pt
+  load_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/pretrained/ep5-ba190/ep5-ba190-rank{rank}.pt
