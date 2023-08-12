@@ -36,7 +36,7 @@ cluster: r8z3 # replace with your cluster here!
 
 
 # Run Name
-run_name: naive_streaming # If left blank, will be read from env var $RUN_NAME
+run_name: real-ava-sut-finetune-naive_streaming # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 8192
@@ -47,7 +47,7 @@ parameters:
   model:
     name: hf_causal_lm
     pretrained: true
-    pretrained_model_name_or_path: mosaicml/mpt-7b # <-- Simply change to 30b when you want
+    pretrained_model_name_or_path: mosaicml/mpt-7b-8k # <-- Simply change to 30b when you want
     init_device: mixed
     config_overrides:
       max_seq_len: ${max_seq_len}
