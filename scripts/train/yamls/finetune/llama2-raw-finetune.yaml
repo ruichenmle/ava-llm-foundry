@@ -22,7 +22,7 @@ integrations:
 command: |
   pip install s3fs
   pip install accelerate==0.21.0  transformers==4.31.0 
-  huggingface-cli login --token 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
+  huggingface-cli login --token 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
   cd ava-llm-foundry/scripts/
   composer train/train.py /mnt/config/parameters.yaml
 
@@ -33,7 +33,7 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 gpu_num: 16
 gpu_type: a100_40gb
-cluster: r8z2 # replace with your cluster here!
+cluster: r8z3 # replace with your cluster here!
 
 
 # Run Name
@@ -50,6 +50,7 @@ parameters:
     pretrained: true
     pretrained_model_name_or_path: ${tokenizer_name}
     init_device: mixed
+    use_auth_token: true
     # config_overrides:
     #   max_seq_len: ${max_seq_len}
     #   attn_config:
