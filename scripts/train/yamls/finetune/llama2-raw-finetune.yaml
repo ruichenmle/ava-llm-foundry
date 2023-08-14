@@ -1,7 +1,7 @@
 integrations:
 - integration_type: git_repo
   git_repo: ruichenmle/ava-llm-foundry
-  git_branch: sut-mpt7b-8k-finetune # use your branch
+  git_branch: llama2-finetune # use your branch
   # git_commit: # OR use your commit hash
   pip_install: -e .[gpu]
   ssh_clone: false # Should be true if using a private repo
@@ -10,9 +10,9 @@ integrations:
   project: avalaraGPT
   # The username or organization the Weights and Biases project belongs to
   entity: mlnlp 
-  group: mpt-7b-8k-sut-finetune
+  group: llama2-sut-finetune
   tags: 
-    - raw-mpt-7b-8k
+    - raw-llama2
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -21,6 +21,8 @@ integrations:
 
 command: |
   pip install s3fs
+  pip install accelerate==0.21.0  transformers==4.31.0 
+  huggingface-cli login --token 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
   cd ava-llm-foundry/scripts/
   composer train/train.py /mnt/config/parameters.yaml
 
@@ -30,31 +32,31 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 
 gpu_num: 16
-gpu_type: a100_80gb
-cluster: r8z6 # replace with your cluster here!
+gpu_type: a100_40gb
+cluster: r8z2 # replace with your cluster here!
 
 
 # Run Name
-run_name: 7b-8k-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
+run_name: llama2-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
 
 parameters:
-  max_seq_len: 8192
+  max_seq_len: 4096
   global_seed: 17
-  tokenizer_name: mosaicml/mpt-7b-8k
+  tokenizer_name: meta-llama/Llama-2-7b-hf
 
   # Model
   model:
     name: hf_causal_lm
     pretrained: true
-    pretrained_model_name_or_path: mosaicml/mpt-7b # <-- Simply change to 30b when you want
+    pretrained_model_name_or_path: ${tokenizer_name}
     init_device: mixed
-    config_overrides:
-      max_seq_len: ${max_seq_len}
-      attn_config:
-        attn_impl: triton
-        # Note: we still use packing, but turn this off for memory.
-        # Initial tests suggest this does not hurt performance too much.
-        attn_uses_sequence_id: false
+    # config_overrides:
+    #   max_seq_len: ${max_seq_len}
+    #   attn_config:
+    #     attn_impl: triton
+    #     # Note: we still use packing, but turn this off for memory.
+    #     # Initial tests suggest this does not hurt performance too much.
+    #     attn_uses_sequence_id: false
 
   # Tokenizer
   tokenizer:
@@ -181,7 +183,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/raw-sut-finetuned/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/raw-sut-finetuned/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
