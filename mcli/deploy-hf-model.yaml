@@ -15,6 +15,9 @@ integrations:
   git_repo: mosaicml/llm-foundry
   git_commit: 496b50bd588b1a7231fe54b05d70babb3620fc72
   ssh_clone: false
+- integration_type: pip_packages
+  packages:
+    - sentencepiece
 model:
   backend: faster_transformers
   downloader: examples.inference-deployments.mpt.mpt_ft_handler.download_convert
