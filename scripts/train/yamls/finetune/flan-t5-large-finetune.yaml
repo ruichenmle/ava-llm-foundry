@@ -1,7 +1,7 @@
 integrations:
 - integration_type: git_repo
   git_repo: ruichenmle/ava-llm-foundry
-  git_branch: sut-mpt7b-8k-finetune # use your branch
+  git_branch: flan-t5-large-finetune # use your branch
   # git_commit: # OR use your commit hash
   pip_install: -e .[gpu]
   ssh_clone: false # Should be true if using a private repo
@@ -10,9 +10,9 @@ integrations:
   project: avalaraGPT
   # The username or organization the Weights and Biases project belongs to
   entity: mlnlp 
-  group: mpt-7b-8k-sut-finetune
+  group: flan-t5-large
   tags: 
-    - raw-mpt-7b-8k
+    - finetune
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -30,31 +30,25 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 
 gpu_num: 16
-gpu_type: a100_80gb
-cluster: r8z6 # replace with your cluster here!
+gpu_type: a100_40gb
+cluster: r8z2 # replace with your cluster here!
 
 
 # Run Name
-run_name: 7b-8k-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
+run_name: flan-t5-large-sut-finetune # If left blank, will be read from env var $RUN_NAME
 
 parameters:
-  max_seq_len: 8192
+  max_seq_len: 4096
   global_seed: 17
-  tokenizer_name: mosaicml/mpt-7b-8k
+  tokenizer_name: google/flan-t5-large
 
   # Model
   model:
-    name: hf_causal_lm
+    name: hf_t5
     pretrained: true
-    pretrained_model_name_or_path: mosaicml/mpt-7b # <-- Simply change to 30b when you want
+    pretrained_model_name_or_path: google/flan-t5-large # <-- Simply change to 30b when you want
     init_device: mixed
-    config_overrides:
-      max_seq_len: ${max_seq_len}
-      attn_config:
-        attn_impl: triton
-        # Note: we still use packing, but turn this off for memory.
-        # Initial tests suggest this does not hurt performance too much.
-        attn_uses_sequence_id: false
+
 
   # Tokenizer
   tokenizer:
@@ -71,7 +65,7 @@ parameters:
       split: train
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
-      decoder_only_format: true
+      decoder_only_format: false
       # packing_ratio: 3
       shuffle: true
     drop_last: true
@@ -89,7 +83,7 @@ parameters:
       split: validation
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
-      decoder_only_format: true
+      decoder_only_format: false
       # packing_ratio: 3
       shuffle: true
     drop_last: false
@@ -181,9 +175,9 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/raw-sut-finetuned/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
   # load_path: s3://my-bucket/my-folder/gpt-30b/checkpoints/latest-rank{rank}.pt
-  # load_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30B/ep3-ba864/ep3-ba864-rank{rank}.pt
+  # load_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k-algo-streaming/pretrained/ep5-ba360/ep5-ba360-rank{rank}.pt
