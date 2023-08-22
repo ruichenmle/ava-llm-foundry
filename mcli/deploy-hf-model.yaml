@@ -5,6 +5,7 @@ compute:
 image: mosaicml/inference:0.1.4
 replicas: 1
 command: |
+  pip install --upgrade pip
   export PYTHONPATH=/code/llm-foundry:/code/examples:/code
 integrations:
 - integration_type: git_repo
