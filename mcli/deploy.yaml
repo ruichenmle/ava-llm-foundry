@@ -1,0 +1,38 @@
+name: raw-sut-finetuned-json
+compute:
+  gpus: 2
+  gpu_type: a100_40gb
+image: mosaicml/inference:0.1.4
+replicas: 1
+command: |
+  pip install --upgrade pip
+  export PYTHONPATH=/code/llm-foundry:/code/examples:/code
+integrations:
+- integration_type: git_repo
+  git_repo: mosaicml/examples
+  git_commit: 27230fa1c883c17a2a45a3762239ff7f5b0ef8ce
+  ssh_clone: false
+- integration_type: git_repo
+  git_repo: mosaicml/llm-foundry
+  git_commit: 496b50bd588b1a7231fe54b05d70babb3620fc72
+  ssh_clone: false
+- integration_type: pip_packages
+  packages:
+    - sentencepiece
+model:
+  backend: faster_transformers
+  downloader: examples.inference-deployments.mpt.mpt_ft_handler.download_convert
+  download_parameters:
+    # s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30B-pretrained-hf/
+    # s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/item-pretrained-finetuned-hf/
+    # s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-hf/
+    # s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-7b-8k/ava-sut-finetuned-10epochs-hf/
+    # s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/raw-sut-finetuned-hf/
+    s3_path:  s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/raw-finetuned-json-hf/
+    gpus: 2
+    force_conversion: true
+  model_handler: examples.inference-deployments.mpt.mpt_ft_handler.MPTFTModelHandler
+  model_parameters:
+    model_name_or_path: mosaicml/mpt-7b-8k
+    ft_lib_path: /code/FasterTransformer/build/lib/libth_transformer.so
+    gpus: 2

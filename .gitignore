@@ -4,6 +4,7 @@ my-copy-arxiv*/
 *.jsonl*
 *.csv
 *.tsv
+*.pkl
 
 # WandB
 wandb/
