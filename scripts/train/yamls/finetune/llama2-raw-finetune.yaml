@@ -13,6 +13,7 @@ integrations:
   group: llama2-sut-finetune
   tags: 
     - raw-llama2
+    - json-format
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -31,13 +32,13 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
-gpu_num: 32
+gpu_num: 16
 gpu_type: a100_40gb
-cluster: r8z3 # replace with your cluster here!
+cluster: r8z2 # replace with your cluster here!
 
 
 # Run Name
-run_name: llama2-4096-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
+run_name: llama2-4096-json-sut-raw-finetuning # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 4096

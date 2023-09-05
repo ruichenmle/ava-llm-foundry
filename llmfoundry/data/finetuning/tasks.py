@@ -54,12 +54,20 @@ def _tokenize_formatted_example(example: Dict[str, Any],
     #         f'from {example=}.'
     #     )
 
+    # # nested list
+    # prompt = "generate templates: " + example['input']
+    # # json string to json
+    # output_json = json.loads(example["output"])
+    # output_list =[list(item.values()) for item in output_json]
+    # response = str(output_list)
+    # print(response)
+
+    # json response
     prompt = "generate templates: " + example['input']
     # json string to json
-    output_json = json.loads(example["output"])
-    output_list =[list(item.values()) for item in output_json]
-    response = str(output_list)
-    print(response)
+    output_json_string = json.dumps(json.loads(example["output"]))
+    response = str(output_json_string)
+    # print(response)
 
     return tokenizer(text=prompt, text_target=response)
 
