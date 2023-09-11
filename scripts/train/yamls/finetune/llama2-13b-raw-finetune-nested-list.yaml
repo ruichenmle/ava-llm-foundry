@@ -13,7 +13,7 @@ integrations:
   group: llama2-sut-finetune
   tags: 
     - raw-llama2
-    - json-format
+    - nested-list-format
 
 
 # We are fetching, converting, and training on the 'val' split
@@ -39,7 +39,7 @@ cluster: r8z6 # replace with your cluster here!
 
 
 # Run Name
-run_name: llama2-13b-4096-json-raw-finetuning-r8z6-16 # If left blank, will be read from env var $RUN_NAME
+run_name: llama2-13b-4096-nested-list-raw-finetuning-r8z6-16 # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 4096
@@ -186,7 +186,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-json-finetune-r8z6-16gpus/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r8z6-16gpus/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt

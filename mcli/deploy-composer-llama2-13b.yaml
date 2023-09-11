@@ -1,0 +1,15 @@
+name: llama2-13b-sut
+replicas: 1
+command: |- # Note this command is a workaround until we build vllm into the inference image
+  pip install vllm==0.1.3
+  pip uninstall torch -y
+  pip install torch==2.0.1
+compute:
+  gpus: 1
+  instance: oci.vm.gpu.a10.1
+image: mosaicml/inference:0.1.40
+cluster: r7z14
+default_model:
+  checkpoint_path:
+    s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-json-finetune-r8z6-16gpus/mono/ep10-ba80.pt
+  model_type: llama2-13b

@@ -27,9 +27,8 @@ command: |
   huggingface-cli login --token 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
   cd ava-llm-foundry/scripts/
   composer train/train.py /mnt/config/parameters.yaml
-
-
-image: mosaicml/llm-foundry:1.13.1_cu117-latest	
+  
+image: mosaicml/llm-foundry:1.13.1_cu117-latest
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
@@ -40,6 +39,9 @@ cluster: r8z6 # replace with your cluster here!
 
 # Run Name
 run_name: llama2-70b-4096-json-raw-finetuning-r8z3 # If left blank, will be read from env var $RUN_NAME
+
+# IMPORTANT: Uncomment if using the 70b model
+max_split_size_mb: 512
 
 parameters:
   max_seq_len: 4096
@@ -53,7 +55,7 @@ parameters:
     pretrained_model_name_or_path: ${tokenizer_name}
     init_device: mixed
     use_auth_token: true
-    attention_patch_type: triton	
+    attention_patch_type: triton
     # config_overrides:
     #   max_seq_len: ${max_seq_len}
     #   attn_config:
