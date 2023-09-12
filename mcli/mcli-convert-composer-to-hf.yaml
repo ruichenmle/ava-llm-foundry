@@ -13,9 +13,11 @@ integrations:
 
 command: |
   cd ava-llm-foundry/scripts/
+  pip3.10 install --upgrade pip
+  pip3.10 install protobuf==3.20.3
   python inference/convert_composer_llama2_to_hf.py \
-    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-json-finetune-r8z6-16gpus/mono/ep10-ba80.pt \
-    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-json-finetuned-hf/ \
+    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r12z3-32gpus/mono/ep10-ba70.pt \
+    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r12z3-32gpus-hf/ \
 
 
 image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04

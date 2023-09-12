@@ -33,13 +33,13 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 # Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
 
 
-gpu_num: 16
-gpu_type: a100_80gb
-cluster: r8z6 # replace with your cluster here!
+gpu_num: 32
+gpu_type: a100_40gb
+cluster: r12z3 # replace with your cluster here!
 
 
 # Run Name
-run_name: llama2-13b-4096-nested-list-raw-finetuning-r8z6-16 # If left blank, will be read from env var $RUN_NAME
+run_name: llama2-13b-4096-nested-list-raw-finetuning-r12z3-32 # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 4096
@@ -72,7 +72,7 @@ parameters:
     name: finetuning
     dataset:
       hf_name: csv
-      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/neeraj/training-data/mixed_with_dor_sources/train.tsv 
+      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/nested-list-format/train.tsv 
       split: train
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
@@ -90,7 +90,7 @@ parameters:
     name: finetuning
     dataset:
       hf_name: csv
-      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/neeraj/training-data/mixed_with_dor_sources/dev.tsv 
+      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/nested-list-format/dev.tsv 
       split: validation
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
@@ -186,7 +186,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r8z6-16gpus/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r12z3-32gpus/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
