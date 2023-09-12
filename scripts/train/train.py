@@ -8,6 +8,7 @@ from typing import Dict
 import torch
 from composer import Trainer
 from composer.core import Evaluator
+from composer.loggers import WandBLogger
 from composer.utils import dist, get_device, reproducibility
 from omegaconf import DictConfig
 from omegaconf import OmegaConf as om
@@ -258,6 +259,8 @@ def main(cfg: DictConfig):
         for name, logger_cfg in (cfg.get('loggers') or {}).items()
     ]
 
+    wandb_logger = WandBLogger()
+
     # Callbacks
     callbacks = [
         build_callback(name, callback_cfg)
@@ -299,7 +302,7 @@ def main(cfg: DictConfig):
         progress_bar=cfg.get('progress_bar', False),
         log_to_console=cfg.get('log_to_console', True),
         console_log_interval=cfg.get('console_log_interval', '1ba'),
-        loggers=loggers,
+        loggers=[wandb_logger],
         callbacks=callbacks,
         precision=cfg.precision,
         algorithms=algorithms,

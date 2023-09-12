@@ -5,6 +5,15 @@ integrations:
   # git_commit: # OR use your commit hash
   pip_install: -e .[gpu]
   ssh_clone: false # Should be true if using a private repo
+- integration_type: wandb
+  # The Weights and Biases project name
+  project: avalaraGPT
+  # The username or organization the Weights and Biases project belongs to
+  entity: mlnlp 
+  group: llama2-sut-pretrain
+  tags: 
+    - llama2-13b
+   
 
 # We are fetching, converting, and training on the 'val' split
 # as it is small and quick to get going for this demo.
@@ -23,17 +32,17 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 
 gpu_num: 32
-gpu_type: a100_80gb
-cluster: r8z6 # replace with your cluster here!
+gpu_type: a100_40gb
+cluster: r12z3 # replace with your cluster here!
 
 
 # Run Name
-run_name: llama2-7b-pretraining # If left blank, will be read from env var $RUN_NAME
+run_name: llama2-13b-pretraining # If left blank, will be read from env var $RUN_NAME
 
 
 parameters:
   data_local: /tmp/mds-cache/2023-06-27/
-  data_remote: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/2023-06-27-streaming/ # If blank, files must be present in data_local
+  data_remote: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging-8k-streaming/ # If blank, files must be present in data_local
   max_seq_len: 4096
   global_seed: 17
 
@@ -42,7 +51,7 @@ parameters:
     name: hf_causal_lm
     pretrained: true
     use_auth_token: true
-    pretrained_model_name_or_path: meta-llama/Llama-2-7b-hf # <-- Simply change to 30b when you want
+    pretrained_model_name_or_path: meta-llama/Llama-2-13b-hf # <-- Simply change to 30b when you want
     init_device: mixed
     # config_overrides:
     #   max_seq_len: ${max_seq_len}
@@ -51,7 +60,7 @@ parameters:
 
   # Tokenizer
   tokenizer:
-    name: meta-llama/Llama-2-7b-hf
+    name: meta-llama/Llama-2-13b-hf
     kwargs:
       model_max_length: ${max_seq_len}
 
@@ -101,7 +110,7 @@ parameters:
       clipping_threshold: 1.0
 
   # max_duration: 143100ba # ~ 600B tokens
-  max_duration: 3ep 
+  max_duration: 5ep 
   # eval_interval: 10000ba
   eval_interval: 1000ba
   eval_first: false
@@ -110,7 +119,7 @@ parameters:
 
   # System
   seed: ${global_seed}
-  device_eval_batch_size: 8
+  device_eval_batch_size: 2
   # device_train_microbatch_size: 8
   device_train_microbatch_size: 1
   precision: amp_bf16
@@ -151,7 +160,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2-7B-pretrained/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2-13b-pretrained/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
