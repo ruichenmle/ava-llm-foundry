@@ -5,14 +5,6 @@ integrations:
   # git_commit: # OR use your commit hash
   pip_install: -e .[gpu]
   ssh_clone: false # Should be true if using a private repo
-- integration_type: wandb
-  # The Weights and Biases project name
-  project: avalaraGPT
-  # The username or organization the Weights and Biases project belongs to
-  entity: mlnlp 
-  group: llama2-sut-pretrain
-  tags: 
-    - llama2-13b
    
 
 # We are fetching, converting, and training on the 'val' split
@@ -22,7 +14,7 @@ integrations:
 
 command: |
   pip install accelerate==0.21.0  transformers==4.31.0 
-  huggingface-cli login --token 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
+  huggingface-cli login --token hf_abc**
   cd ava-llm-foundry/scripts/
   composer train/train.py /mnt/config/parameters.yaml
 
@@ -32,8 +24,8 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 
 gpu_num: 32
-gpu_type: a100_80gb
-cluster: r8z6 # replace with your cluster here!
+gpu_type: a100_40gb
+cluster: r12z3 # replace with your cluster here!
 
 
 # Run Name
@@ -42,7 +34,7 @@ run_name: llama2-13b-pretraining # If left blank, will be read from env var $RUN
 
 parameters:
   data_local: /tmp/mds-cache/2023-06-27/
-  data_remote: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging-llama2-13b-4096-streaming/ # If blank, files must be present in data_local
+  data_remote: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging-8k-streaming/ # If blank, files must be present in data_local
   max_seq_len: 4096
   global_seed: 17
 
@@ -74,7 +66,6 @@ parameters:
       shuffle: true
       max_seq_len: ${max_seq_len}
       shuffle_seed: ${global_seed}
-      shuffle_algo: naive
     drop_last: true
     num_workers: 8
 
@@ -116,7 +107,7 @@ parameters:
   eval_interval: 1000ba
   eval_first: false
   eval_subset_num_batches: -1
-  global_train_batch_size: 128
+  global_train_batch_size: 256 
 
   # System
   seed: ${global_seed}
@@ -161,7 +152,7 @@ parameters:
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2-13b-pretrained-naive/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2-13b-pretrained/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt

@@ -37,12 +37,12 @@ cluster: r8z6 # replace with your cluster here!
 
 
 # Run Name
-run_name: llama2-13b-pretraining # If left blank, will be read from env var $RUN_NAME
+run_name: productGPT-llama2-13b-pretraining # If left blank, will be read from env var $RUN_NAME
 
 
 parameters:
   data_local: /tmp/mds-cache/2023-06-27/
-  data_remote: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/data/sut-lodging-llama2-13b-4096-streaming/ # If blank, files must be present in data_local
+  data_remote: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/productGPT/data/39_61_62/llama2-13b-4096-streaming/ # If blank, files must be present in data_local
   max_seq_len: 4096
   global_seed: 17
 
@@ -157,11 +157,11 @@ parameters:
   #   wandb: {}
 
   # Checkpoint to local filesystem or remote object store
-  save_interval: 5000ba
+  save_interval: 20000ba
   # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
   # save_folder: ./{run_name}/checkpoints
   # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2-13b-pretrained-naive/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/productGPT/model/39_61_62/llama2-13b-pretrained/
 
   # Load from local filesystem or remote object store
   # load_path: ./gpt-30b/checkpoints/latest-rank{rank}.pt
