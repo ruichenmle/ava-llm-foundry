@@ -1,4 +1,4 @@
-name: llama2-13b-sut-nested-list
+name: ava-llama2-13b-sut-nested-list
 replicas: 1
 command: |- # Note this command is a workaround until we build vllm into the inference image
   python -m venv venv
@@ -15,5 +15,6 @@ image: mosaicml/inference:0.1.40
 cluster: r7z14
 default_model:
   checkpoint_path:
-    s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r12z3-32gpus-hf/
+    # s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-nested-list-finetune-r12z3-32gpus-hf/
+    s3_path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/ava-sut-nested-list-finetuned-hf/
   model_type: llama2-13b
