@@ -34,11 +34,11 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 gpu_num: 32
 gpu_type: a100_40gb
-cluster: r12z3 # replace with your cluster here!
+cluster: r8z2 # replace with your cluster here!
 
 
 # Run Name
-run_name: flan-t5-large-4096-nested-list-finetuning # If left blank, will be read from env var $RUN_NAME
+run_name: flan-t5-large-ep30-4096-nested-list-finetuning # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 4096
@@ -68,7 +68,7 @@ parameters:
       split: train
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
-      decoder_only_format: true
+      decoder_only_format: false 
       # packing_ratio: 3
       shuffle: true
     drop_last: true
@@ -86,7 +86,7 @@ parameters:
       split: validation
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
-      decoder_only_format: true
+      decoder_only_format: false 
       # packing_ratio: 3
       shuffle: true
     drop_last: false
@@ -118,7 +118,7 @@ parameters:
       clipping_threshold: 1.0
 
   # max_duration: 143100ba # ~ 600B tokens
-  max_duration: 10ep 
+  max_duration: 30ep 
   eval_interval: 1ep
   eval_first: true
   eval_subset_num_batches: -1
@@ -173,4 +173,4 @@ parameters:
   load_weights_only: true
   python_log_level: debug
 
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep30/

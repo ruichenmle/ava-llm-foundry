@@ -51,7 +51,7 @@ parameters:
     name: hf_causal_lm
     pretrained: true
     pretrained_model_name_or_path: ${tokenizer_name}
-    init_device: mixed
+    init_device: mixed # only for big models; can also be used for smaller models
     use_auth_token: true
     # config_overrides:
     #   max_seq_len: ${max_seq_len}
