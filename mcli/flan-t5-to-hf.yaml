@@ -11,8 +11,8 @@ integrations:
 command: |
   cd ava-llm-foundry/scripts/
   python inference/convert_composer_to_hf_flan.py \
-    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep30/mono/ep30-ba210.pt \
-    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep30-hf/ \
+    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep20-text/mono/ep20-ba0.pt \
+    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep20-text-hf/ \
     --output_precision bf16 \
 
 
