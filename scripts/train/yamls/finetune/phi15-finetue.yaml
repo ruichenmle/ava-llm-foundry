@@ -1,0 +1,188 @@
+integrations:
+- integration_type: git_repo
+  git_repo: ruichenmle/ava-llm-foundry
+  git_branch: llama2-finetune # use your branch
+  # git_commit: # OR use your commit hash
+  pip_install: -e .[gpu]
+  ssh_clone: false # Should be true if using a private repo
+- integration_type: wandb
+  # The Weights and Biases project name
+  project: avalaraGPT
+  # The username or organization the Weights and Biases project belongs to
+  entity: mlnlp 
+  group: phi15-sut-finetune
+  tags: 
+    - nested-list-format
+
+
+# We are fetching, converting, and training on the 'val' split
+# as it is small and quick to get going for this demo.
+# For real training runs, follow the instructions in `llm-foundry/scripts/train/README.md`
+# to convert and host the full 'train' dataset.
+
+command: |
+  pip install s3fs
+  pip install accelerate==0.21.0  transformers==4.31.0 
+  huggingface-cli login --token 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
+  cd ava-llm-foundry/scripts/
+  composer train/train.py /mnt/config/parameters.yaml
+
+
+image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
+# Mosaic Cloud will use run_name (with a unique suffix) to populate the env var $COMPOSER_RUN_NAME
+
+
+gpu_num: 32
+gpu_type: a100_40gb
+cluster: r8z3 # replace with your cluster here!
+
+
+# Run Name
+run_name: ava-phi15-2048-nested-list-finetuning # If left blank, will be read from env var $RUN_NAME
+
+parameters:
+  max_seq_len: 2048
+  global_seed: 17
+  tokenizer_name: microsoft/phi-1_5
+
+  # Model
+  model:
+    name: hf_causal_lm
+    pretrained: true
+    pretrained_model_name_or_path: ${tokenizer_name}
+    init_device: mixed # only for big models; can also be used for smaller models
+    use_auth_token: true
+    # config_overrides:
+    #   max_seq_len: ${max_seq_len}
+    #   attn_config:
+    #     attn_impl: triton
+    #     # Note: we still use packing, but turn this off for memory.
+    #     # Initial tests suggest this does not hurt performance too much.
+    #     attn_uses_sequence_id: false
+
+  # Tokenizer
+  tokenizer:
+    name: ${tokenizer_name}
+    kwargs:
+      model_max_length: ${max_seq_len}
+
+  # Dataloaders
+  train_loader: &train_loader
+    name: finetuning
+    dataset:
+      hf_name: csv
+      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/nested-list-format/train.tsv 
+      split: train
+      max_seq_len: ${max_seq_len}
+      allow_pad_trimming: false
+      decoder_only_format: true
+      # packing_ratio: 3
+      shuffle: true
+    drop_last: true
+    num_workers: 8
+    pin_memory: false
+    prefetch_factor: 2
+    persistent_workers: true
+    timeout: 0
+
+  eval_loader:
+    name: finetuning
+    dataset:
+      hf_name: csv
+      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/nested-list-format/dev.tsv 
+      split: validation
+      max_seq_len: ${max_seq_len}
+      allow_pad_trimming: false
+      decoder_only_format: true
+      # packing_ratio: 3
+      shuffle: true
+    drop_last: false
+    num_workers: 8
+    pin_memory: false
+    prefetch_factor: 2
+    persistent_workers: true
+    timeout: 0
+      
+
+  # Optimization
+  scheduler:
+    name: cosine_with_warmup
+    t_warmup: 50ba
+    alpha_f: 0
+
+  optimizer:
+    name: decoupled_adamw
+    lr: 9.65e-6
+    betas:
+    - 0.9
+    - 0.95
+    eps: 1.0e-08
+    weight_decay: 0
+
+  algorithms:
+    gradient_clipping:
+      clipping_type: norm
+      clipping_threshold: 1.0
+
+  # max_duration: 143100ba # ~ 600B tokens
+  max_duration: 10ep 
+  eval_interval: 1ep
+  eval_first: true
+  eval_subset_num_batches: -1
+  global_train_batch_size: 64
+
+  # System
+  seed: ${global_seed}
+  device_eval_batch_size: 1
+  device_train_microbatch_size: 1
+  precision: amp_bf16
+
+  # FSDP
+  fsdp_config:
+    sync_module_states: true
+    sharding_strategy: FULL_SHARD
+    mixed_precision: PURE
+    activation_checkpointing: true
+    activation_checkpointing_reentrant: false
+    activation_cpu_offload: false
+    limit_all_gathers: true
+    verbose: false
+    state_dict_type: local
+
+  # Logging
+  progress_bar: false
+  log_to_console: true
+  console_log_interval: 1ba
+
+  # callbacks:
+  #   speed_monitor:
+  #     window_size: 10
+  #   runtime_estimator: {}
+  #   lr_monitor: {}
+
+  callbacks:
+    mono_ckpt_saver:
+      save_folder: ${save_folder}mono/
+      batch_interval: 15000
+      overwrite: true
+    speed_monitor:
+      window_size: 10
+    lr_monitor: {}
+    memory_monitor: {}
+    runtime_estimator: {}
+
+  # loggers:
+  #   wandb: {}
+
+  # need to use converted checkpoint with llm-foundry code
+  # load_path:
+  autoresume: false
+  load_weights_only: true
+  python_log_level: debug
+
+  # Checkpoint to local filesystem or remote object store
+  # save_interval: 5000ba
+  # save_num_checkpoints_to_keep: 1  # Important, this cleans up checkpoints saved to DISK
+  # save_folder: ./{run_name}/checkpoints
+  # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/phi-1-5/2048-nested-list-finetuned/
