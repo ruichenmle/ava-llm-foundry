@@ -14,6 +14,7 @@ integrations:
   tags: 
     - text
     - nested-list-format
+    - service-nested
 
 
 # We are fetching, converting, and training on the 'val' split
@@ -38,7 +39,7 @@ cluster: r12z3 # replace with your cluster here!
 
 
 # Run Name
-run_name: flan-t5-large-ep20-4096-nested-list-text # If left blank, will be read from env var $RUN_NAME
+run_name: flan-t5-large-ep20-4096-service-nested-list # If left blank, will be read from env var $RUN_NAME
 
 parameters:
   max_seq_len: 4096
@@ -61,10 +62,10 @@ parameters:
 
   # Dataloaders
   train_loader: &train_loader
-    name: text 
+    name: finetuning
     dataset:
       hf_name: csv
-      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/nested-list-format/train.tsv 
+      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/serviced-nested-list/train.tsv 
       split: train
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
@@ -79,10 +80,10 @@ parameters:
     timeout: 0
 
   eval_loader:
-    name: text 
+    name: finetuning
     dataset:
       hf_name: csv
-      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/nested-list-format/dev.tsv 
+      path: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/sut-extraction/ruichen/sut-data/serviced-nested-list/dev.tsv 
       split: validation
       max_seq_len: ${max_seq_len}
       allow_pad_trimming: false
@@ -174,4 +175,4 @@ parameters:
   load_weights_only: true
   python_log_level: debug
 
-  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep20-text/
+  save_folder: s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-ep20-service-nested-list/
