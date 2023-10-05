@@ -15,9 +15,9 @@ command: |
   cd ava-llm-foundry/scripts/
   pip3.10 install --upgrade pip
   pip3.10 install protobuf==3.20.3
-  python inference/convert_composer_to_hf.py \
-    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune/mono/ep10-ba70.pt \
-    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/flan-t5-large/q3-ipsprint-finetune-hf/ \
+  python inference/convert_composer_llama2_to_hf.py \
+    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-finetune-old-nested-list/mono/ep20-ba160.pt \
+    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/llama2/13B/raw-sut-finetune-old-nested-list-hf/ \
 
 
 image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
@@ -25,11 +25,12 @@ image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
 
 gpu_num: 8
 gpu_type: a100_40gb
-cluster: r8z3 # replace with your cluster here!
+cluster: r7z2 # replace with your cluster here!
 
 
 # Run Name
-run_name: flan-t5-large-finetuned-model-conversion # If left blank, will be read from env var $RUN_NAME
+# run_name: flan-t5-large-finetuned-model-conversion # If left blank, will be read from env var $RUN_NAME
+run_name: raw-llama2-13b-finetuned-old-nested-model-conversion # If left blank, will be read from env var $RUN_NAME
 
 
 parameters: {}
