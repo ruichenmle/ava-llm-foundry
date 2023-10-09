@@ -14,8 +14,8 @@ integrations:
 command: |
   cd ava-llm-foundry/scripts/
   python inference/convert_composer_to_hf.py \
-    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/ava-finetuned-service-nested-list/mono/ep20-ba80.pt \
-    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/ava-finetuned-service-nested-list-hf/ \
+    --composer_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/raw-finetuned-service-nested-list/mono/ep20-ba80.pt \
+    --hf_output_path s3://mosaicml-68c98fa5-0b21-4c7b-b40b-c4482db8832a/avalaraGPT/model/mpt-30b-sut-pretrain/raw-finetuned-service-nested-list-hf/ \
     --output_precision bf16
 
 image: mosaicml/pytorch:1.13.1_cu117-python3.10-ubuntu20.04
@@ -27,7 +27,7 @@ cluster: r8z6 # replace with your cluster here!
 
 
 # Run Name
-run_name: sut-ava-mpt30b-service-listed-conversion # If left blank, will be read from env var $RUN_NAME
+run_name: sut-raw-mpt30b-service-listed-conversion # If left blank, will be read from env var $RUN_NAME
 
 
 parameters: {}
